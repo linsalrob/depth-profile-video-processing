@@ -5,7 +5,9 @@ import shutil
 import re
 
 os.mkdir("Examples/")
-for i in map(str, range(1, 7)):
+for i in map(str, range(1, 10)):
+    if not os.path.exists(i):
+        continue
     os.mkdir(os.path.sep.join(["Examples", i]))
     paths=[]
     files=[]
