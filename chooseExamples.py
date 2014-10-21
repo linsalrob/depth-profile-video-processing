@@ -1,5 +1,5 @@
 """Randomly choose some example images to try the stitching approach"""
-
+ 
 import os
 import shutil
 import re
