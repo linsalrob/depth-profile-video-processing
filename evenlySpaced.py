@@ -38,7 +38,14 @@ def readPeaks(fin):
     
     # calculate the difference between our peaks
     for p in firstPeaks:
-        difference[p] = firstPeaks[p][0] - minpeak
+        difftot=0
+        n=0
+        for i in range(len(firstPeaks[p])):
+           n+=1
+           difftot += firstPeaks[p][i] - firstPeaks[minPeakFile][i]
+        #difference[p] = firstPeaks[p][0] - minpeak
+        difference[p] = int(difftot/n)
+        sys.stderr.write("The average difference between " + p + " and  " + minPeakFile + " is " + str(difference[p]) + "\n")
 
 
     # now calculate when we should save the file
@@ -67,8 +74,8 @@ def readPeaks(fin):
    
     return saveat, difference
 
-def printAnImage(img, filename, count, loc):
-    outfile = str(loc) + os.path.sep + str(count) + "." + filename + ".JPG";
+def printAnImage(img, filename, count, oricount, loc):
+    outfile = str(loc) + os.path.sep + str(count) + "." + str(oricount) + "." + filename + ".JPG";
     #sys.stderr.write("Saving " + outfile + "\n")
     cv2.imwrite(outfile, img)
 
@@ -101,15 +108,17 @@ for f in args.file:
 
     vid = cv2.VideoCapture(f)
     ret, img = vid.read()
+    if not ret:
+        sys.stderr.write("Did not get a valid return on the first image read for " + videoFileName + "\n")
     count=0
     while (ret):
         count+=1
-        correctedCount = count + difference[f]
+        correctedCount = count - difference[f]
         if correctedCount in saveat:
             outputlocation = os.path.sep.join([dest, str(saveat[correctedCount])])
             if not os.path.exists(outputlocation):
                 os.mkdir(outputlocation)
-            printAnImage(img, videoFileName, correctedCount, outputlocation)
+            printAnImage(img, videoFileName, correctedCount, count, outputlocation)
         ret, img = vid.read()
 
 

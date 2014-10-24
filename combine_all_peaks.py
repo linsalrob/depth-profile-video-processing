@@ -17,7 +17,7 @@ km=sklearn.cluster.KMeans(n_clusters=22, init='k-means++')
 fit=km.fit(sdata)
 sd=np.vstack(data['Cam1'])
 f=km.fit(sd, fit.cluster_centers_)
-with open('peaks.tsv', 'w') as outf:
+with open('combined_peaks.tsv', 'w') as outf:
     for d in data:
         sd=np.vstack(data[d])
         f=km.fit(sd, fit.cluster_centers_)
@@ -25,4 +25,4 @@ with open('peaks.tsv', 'w') as outf:
         for i in f.cluster_centers_:
             a.append(i[0])
         a.sort()
-        outf.write(d + "\t" + "\t".join([str(int(x)) for x in a]) + "\n")
+        outf.write(d + "\t" + ",".join([str(int(x)) for x in a]) + "\n")
